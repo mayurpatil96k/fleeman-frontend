@@ -1,14 +1,31 @@
 import React from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-export default function Footer() {
+function Footer() {
   return (
-    <footer className='bg-light text-center text-lg-start text-muted fixed-bottom'>
-      <div className='text-center p-4' style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
-        © 2021 Copyright:
-        <a className='text-reset fw-bold' href='https://mdbootstrap.com/'>
-          MDBootstrap.com
-        </a>
-      </div>
+    <footer className="bg-dark text-light py-3 mt-auto">
+      <Container>
+        <Row>
+          <Col>
+            <p>India Drive</p>
+            <p>&copy; {new Date().getFullYear()} Company Name. All rights reserved.</p>
+          </Col>
+          <Col>
+            <h5>Useful Links</h5>
+            <ul className="list-unstyled">
+              <li><Link to="/aboutus" className="text-light">About Us</Link></li>
+              <li><Link to="/AffiliatedHotels" className="text-light">Affiliated Hotels</Link></li>
+              <li><Link to="/WeatherRedirect" className="text-light">Weather</Link></li>
+              <li><Link to="/CustomerCare" className="text-light">Contact Us</Link></li>
+              <li><Link to="/sitemap" className="text-light">SiteMap</Link></li>
+              <li><Link to="/CareerPage" className="text-light">Careers</Link></li>
+            </ul>
+          </Col>
+        </Row>
+      </Container>
     </footer>
   );
 }
+
+export default Footer;

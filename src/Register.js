@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 
-
 const CustomerForm = () => {
     const [formData, setFormData] = useState({
         firstName: '',
@@ -9,6 +8,7 @@ const CustomerForm = () => {
         addressLine1: '',
         addressLine2: '',
         email: '',
+        state:'',
         city: '',
         pincode: '',
         phoneNumber: '',
@@ -27,7 +27,7 @@ const CustomerForm = () => {
         dateOfBirth: '',
         password: ''
     });
-
+   
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevState => ({
@@ -47,6 +47,7 @@ const CustomerForm = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
+                window.location.href = "/LoginComponent";
                 console.log('Customer data submitted successfully');
                 // Reset form after successful submission if needed
                 setFormData({
@@ -55,6 +56,7 @@ const CustomerForm = () => {
                     addressLine1: '',
                     addressLine2: '',
                     email: '',
+                    state: '',
                     city: '',
                     pincode: '',
                     phoneNumber: '',
@@ -107,6 +109,10 @@ const CustomerForm = () => {
                 <Form.Group controlId="email">
                     <Form.Label>Email:</Form.Label>
                     <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} required />
+                </Form.Group>
+                <Form.Group controlId="state">
+                    <Form.Label>State:</Form.Label>
+                    <Form.Control type="text" name="state" value={formData.state} onChange={handleChange} required />
                 </Form.Group>
                 <Form.Group controlId="city">
                     <Form.Label>City:</Form.Label>
