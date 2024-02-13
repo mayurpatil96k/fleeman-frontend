@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Form } from 'react-bootstrap';
+import { Card, Form, Button } from 'react-bootstrap';
 
 const AddonList = () => {
     const [addons, setAddons] = useState([]);
+    const [selectedAddons, setSelectedAddons] = useState([]);
 
     useEffect(() => {
         fetchAddons();
@@ -23,13 +24,26 @@ const AddonList = () => {
     };
 
     const handleSelectAddon = (addonId) => {
-        // Handle selection of addon with addonId
-        console.log('Selected addon:', addonId);
+        // Toggle selection of addon with addonId
+        if (selectedAddons.includes(addonId)) {
+            setSelectedAddons(selectedAddons.filter(id => id !== addonId));
+        } else {
+            setSelectedAddons([...selectedAddons, addonId]);
+        }
+    };
+
+    // Add form data to session storage
+    useEffect(() => {
+        sessionStorage.setItem('selectedAddons', JSON.stringify(selectedAddons));
+    }, [selectedAddons]);
+
+    const handleContinue = () => {
+        // Handle continue button click
+        console.log('Selected addons:', selectedAddons);
     };
 
     return (
         <>
-       
         <div className="d-flex flex-wrap justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
         <h1>AddonList</h1>
             {addons.map((addon) => (
@@ -43,15 +57,17 @@ const AddonList = () => {
                             Valid Until: {new Date(addon.rateValidUntil).toLocaleDateString()}
                         </Card.Text>
                         <Form.Check
-                            type="radio"
+                            type="checkbox"
                             id={`addon-${addon.addonId}`}
                             label="Select"
+                            checked={selectedAddons.includes(addon.addonId)}
                             onChange={() => handleSelectAddon(addon.addonId)}
                         />
                     </Card.Body>
                 </Card>
             ))}
         </div>
+        <Button variant="primary" onClick={handleContinue}>Continue</Button>
         </>
     );
 };

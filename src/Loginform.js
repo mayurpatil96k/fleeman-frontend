@@ -5,13 +5,15 @@ export default function LoginComponent() {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const handleLogin = () => {
+  const handleLogin = () => { 
     const url = `http://localhost:8080/login/${encodeURIComponent(email)}/${encodeURIComponent(password)}`;
 
     fetch(url)
       .then(response => response.json())
       .then(data => {
         if (data) {
+          sessionStorage.setItem('isLoggedIn', true);
+          fetchCustomerData(email);
           alert('Login successful');
         } else {
           alert('Login failed');
@@ -25,12 +27,26 @@ export default function LoginComponent() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (password.length < 8) {
+    if (password.length < 2) {
       setPasswordError('Password must be at least 8 characters long');
       return;
     }
     setPasswordError('');
     handleLogin();
+  };
+  const fetchCustomerData = (email) => {
+    const url = `http://localhost:8080/customer/${encodeURIComponent(email)}`;
+
+    fetch(url)
+      .then(response => response.json())
+      .then(customerData => {
+        // Store customer data in session storage
+        sessionStorage.setItem('customerData', JSON.stringify(customerData));
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while fetching customer data.');
+      });
   };
 
   return (
@@ -63,7 +79,7 @@ export default function LoginComponent() {
                 />
                 {passwordError && <div className="invalid-feedback">{passwordError}</div>}
               </div>
-              <button type="submit" className="btn btn-primary">Login</button>
+              <button type="submit" className="btn btn-primary" onClick={handleSubmit}>Log in</button>
             </form>
           </div>
         </div>

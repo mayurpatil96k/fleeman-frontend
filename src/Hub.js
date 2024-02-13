@@ -40,8 +40,7 @@ const HubSelectionForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (selectedHub) {
-            console.log('Selected Hub:', selectedHub);
-            // Handle submission logic here
+            sessionStorage.setItem('selectedHub', JSON.stringify(selectedHub));
         } else {
             console.error('Please select a hub');
         }

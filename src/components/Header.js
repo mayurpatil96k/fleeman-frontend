@@ -15,6 +15,7 @@ function Header() {
             <Nav.Link as={Link} to="/Modify">Modify/Cancel</Nav.Link>
             <Nav.Link as={Link} to="/CustomerForm">Membership</Nav.Link>
             <Nav.Link as={Link} to="/CustomerCare">Customer Care</Nav.Link>
+            <Nav.Link as={Link} to="/BookingForm">Booking</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

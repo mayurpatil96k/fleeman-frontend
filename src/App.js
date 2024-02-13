@@ -13,8 +13,10 @@ import WeatherRedirect from './components/Weather';
 import CareerPage from './components/Carrear';
 import AddonList from "./Addon";
 import HubSelectionForm from "./Hub";
+import BookingForm from "./BookingForm";
 
 const App = () => {
+  sessionStorage.setItem('isLoggedIn', false);
     return (
       <Router>
       <div className="App">
@@ -29,6 +31,7 @@ const App = () => {
           <Route path="/WeatherRedirect" element={<WeatherRedirect/>} />
           <Route path="/CareerPage" element={<CareerPage/>} />
           <Route path="/Car" element={<Car/>} />
+          <Route path="/BookingForm" element={<BookingForm/>} />
           <Route path="/HubSelectionForm" element={<HubSelectionForm/>} />
           <Route path="/CustomerCare" element={<CustomerCare/>} />
           <Route path="/AddonList" element={<AddonList/>} />

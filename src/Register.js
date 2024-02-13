@@ -47,8 +47,10 @@ const CustomerForm = () => {
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                window.location.href = "/LoginComponent";
                 console.log('Customer data submitted successfully');
+                sessionStorage.setItem('formData', JSON.stringify(formData));
+                
+    window.location.href = "/LoginComponent";
                 // Reset form after successful submission if needed
                 setFormData({
                     firstName: '',
