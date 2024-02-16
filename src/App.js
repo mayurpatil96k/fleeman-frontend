@@ -23,6 +23,7 @@ import StaffPage from './StaffPage';
 import BookingByStaff from './BookingByStaff';
 import StaffBookingForm from './StaffBookingForm';
 import CancelBookingByStaff from './CancelBookingByStaff';
+import StaffHandOver from './StaffHandOver';
 
 const App = () => {
     return (
@@ -44,6 +45,7 @@ const App = () => {
           <Route path="/WeatherRedirect" element={<WeatherRedirect/>} />
           <Route path="/CareerPage" element={<CareerPage/>} />
           <Route path="/Car" element={<Car/>} />
+          <Route path="/StaffHandOver" element={<StaffHandOver/>} />
           <Route path="/CancelBookingByStaff" element={<CancelBookingByStaff/>} />
           <Route path="/StaffBookingForm" element={<StaffBookingForm/>} />
           <Route path="/Cancel" element={<Cancel/>} />

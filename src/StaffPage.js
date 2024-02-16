@@ -26,7 +26,7 @@ const StaffPage = () => {
   };
 
   const handleHandover = () => {
-    navigate("/handover");
+    navigate("/StaffHandOver");
   };
 
   return (
