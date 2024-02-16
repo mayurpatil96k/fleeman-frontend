@@ -26,6 +26,8 @@ const ConfirmBooking = () => {
       const selectedCar = JSON.parse(sessionStorage.getItem('selectedCar'));
       const bookingFormData = JSON.parse(sessionStorage.getItem('bookingFormData'));
       const customerFormData = JSON.parse(sessionStorage.getItem('customerFormData'));
+      const selectedHub = JSON.parse(sessionStorage.getItem('selectedHub'));
+      const selectedReturnHub = JSON.parse(sessionStorage.getItem('selectedReturnHub'));
       const currentDate = new Date();
 
 // Format current date to YYYY-MM-DD format
@@ -79,6 +81,8 @@ const formattedCurrentDate = currentDate.toISOString().split('T')[0];
         "weeklyRate": selectedCar.weeklyRate,
         "monthlyRate": selectedCar.monthlyRate,
         "emailId": customerFormData.r_email,
+        "p_hubId": selectedHub.hubId,
+        "r_hubId": selectedReturnHub.hubId
     }
   
       // Make a POST request to the specified link with the formatted data
