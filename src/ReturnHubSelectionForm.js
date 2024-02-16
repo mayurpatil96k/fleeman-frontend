@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
-import SessionStorage from './SessionStorage';
 
-const HubSelectionForm = () => {
+const ReturnHubSelectionForm = () => {
     const [hubs, setHubs] = useState([]);
     const [selectedHub, setSelectedHub] = useState(null);
     const [cityName, setCityName] = useState('');
@@ -15,11 +14,9 @@ const HubSelectionForm = () => {
     const fetchHubs = async () => {
         try {
             const bookingFormData = JSON.parse(sessionStorage.getItem('bookingFormData'));
-            const pickupCityId = bookingFormData.pickupCityId; // Assuming pickupCityId is stored in booking form data
-    
-            
-    
-            const response = await fetch(`http://localhost:8080/hub/${pickupCityId}`);
+            const returnCityId = bookingFormData.returnCityId; // Assuming returnCityId is stored in booking form data
+
+            const response = await fetch(`http://localhost:8080/hub/${returnCityId}`);
             if (response.ok) {
                 const data = await response.json();
                 setHubs(data);
@@ -31,7 +28,6 @@ const HubSelectionForm = () => {
             console.error('Error fetching hubs:', error);
         }
     };
-    
 
     const calculateCityInfo = (data) => {
         const city = data[0]?.city?.cityName || '';
@@ -47,8 +43,8 @@ const HubSelectionForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (selectedHub) {
-            sessionStorage.setItem('selectedHub', JSON.stringify(selectedHub));
-            window.location.href = "/ReturnHubSelectionForm";
+            sessionStorage.setItem('selectedReturnHub', JSON.stringify(selectedHub)); // Store return hub separately
+            window.location.href = "/Car";
         } else {
             console.error('Please select a hub');
         }
@@ -56,7 +52,7 @@ const HubSelectionForm = () => {
 
     return (
         <div className="container">
-            <h2>Your Pickup location {cityName} has {numHubs} hub. Please select one</h2>
+            <h2>Your Return location {cityName} has {numHubs} hubs. Please select one</h2>
             <Form onSubmit={handleSubmit}>
                 {hubs.map((hub) => (
                     <Card key={hub.hubId} className="mb-3">
@@ -83,4 +79,4 @@ const HubSelectionForm = () => {
     );
 };
 
-export default HubSelectionForm;
+export default ReturnHubSelectionForm;

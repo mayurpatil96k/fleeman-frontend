@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 
 export default function LoginComponent() {
@@ -15,6 +16,7 @@ export default function LoginComponent() {
           sessionStorage.setItem('isLoggedIn', true);
           fetchCustomerData(email);
           alert('Login successful');
+          window.location.href = '/BookingForm';
         } else {
           alert('Login failed');
         }
@@ -34,6 +36,7 @@ export default function LoginComponent() {
     setPasswordError('');
     handleLogin();
   };
+  
   const fetchCustomerData = (email) => {
     const url = `http://localhost:8080/customer/${encodeURIComponent(email)}`;
 
@@ -50,10 +53,17 @@ export default function LoginComponent() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+    <div 
+      className="d-flex justify-content-center align-items-center" 
+      style={{ 
+        minHeight: "100vh", 
+        background: `url('https://images.pexels.com/photos/120049/pexels-photo-120049.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2') no-repeat center center fixed`, 
+        backgroundSize: 'cover',
+      }}
+    >
       <div className="col-md-6">
         <div className="card">
-          <div className="card-body">
+          <div className="card-body"  style={{ backgroundColor:"skyblue" }}>
             <h2 className="card-title">Login</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group">

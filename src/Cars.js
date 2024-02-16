@@ -32,6 +32,7 @@ const Car = () => {
         if (selectedCarType) {
             const selectedCarJson = JSON.stringify(selectedCarType);
             sessionStorage.setItem('selectedCar', selectedCarJson);
+            window.location.href = "/AddonList";
         } else {
             setError('Please select a car type');
         }
