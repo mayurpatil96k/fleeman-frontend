@@ -22,7 +22,7 @@ const StaffPage = () => {
   };
 
   const handleReturn = () => {
-    navigate("/return");
+    navigate("/Return");
   };
 
   const handleHandover = () => {

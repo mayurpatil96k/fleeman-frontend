@@ -1,5 +1,5 @@
-import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React from 'react';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import AboutUs from './components/AboutUs';
@@ -24,6 +24,8 @@ import BookingByStaff from './BookingByStaff';
 import StaffBookingForm from './StaffBookingForm';
 import CancelBookingByStaff from './CancelBookingByStaff';
 import StaffHandOver from './StaffHandOver';
+import Return from './Return';
+import Rlogic from './Rlogic';
 
 const App = () => {
     return (
@@ -39,12 +41,14 @@ const App = () => {
           <Route path="/AboutUs" element={<AboutUs/>} />
           <Route path="/BookingFormRitik" element={<BookingFormRitik/>} />
           <Route path="/Modify" element={<Modify/>} />
+          <Route path="/Rlogic" element={<Rlogic/>} />
           <Route path="/ConfirmBooking" element={<ConfirmBooking/>} />
           <Route path="/CustomerForm" element={<CustomerForm/>} />
           <Route path="/AffiliatedHotels" element={<AffiliatedHotels/>} />
           <Route path="/WeatherRedirect" element={<WeatherRedirect/>} />
           <Route path="/CareerPage" element={<CareerPage/>} />
           <Route path="/Car" element={<Car/>} />
+          <Route path="/Return" element={<Return/>} />
           <Route path="/StaffHandOver" element={<StaffHandOver/>} />
           <Route path="/CancelBookingByStaff" element={<CancelBookingByStaff/>} />
           <Route path="/StaffBookingForm" element={<StaffBookingForm/>} />
