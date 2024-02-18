@@ -77,14 +77,21 @@ const Cancel = () => {
         }
       }
 
-    const handleSelectInvoice = (invoice) => {
+      const handleSelectInvoice = async (invoice) => {
+        // Set selected invoice
         setSelectedInvoice(invoice);
-        fetchDataAndStoreInSessionStorage(invoice.carid);
-        fetchCustomerDataAndStoreInSessionStorage(invoice.customerid);
-        fetchInvoiceDetailsAndStoreInSessionStorage(invoice.invoiceId);
+        // Fetch and store customer data in sessionStorage
+        await fetchCustomerDataAndStoreInSessionStorage(invoice.customerid);
+        // Fetch and store invoice details in sessionStorage
+        await fetchInvoiceDetailsAndStoreInSessionStorage(invoice.invoiceId);
+        // Fetch and store car data in sessionStorage
+        await fetchDataAndStoreInSessionStorage(invoice.carid);
+        // Store selected invoice in sessionStorage
         sessionStorage.setItem('selectedInvoice', JSON.stringify(invoice));
+        // Redirect to ReturnLogic component
         window.location.href = '/ReturnLogic';
     };
+    
 
     useEffect(() => {
         const selectedInvoiceFromSession = sessionStorage.getItem('selectedInvoice');
