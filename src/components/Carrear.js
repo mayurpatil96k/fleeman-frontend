@@ -22,7 +22,7 @@ function CareerPage() {
   ];
 
   return (
-    <Container>
+    <Container style={{padding:"40px"}}>
       <h2 className="mt-4 mb-3">Job Openings</h2>
       <Row xs={1} md={2} lg={3} className="g-4">
         {jobOpenings.map(job => (

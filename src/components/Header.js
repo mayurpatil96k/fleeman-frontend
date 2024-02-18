@@ -28,6 +28,9 @@ function Header() {
     sessionStorage.clear();
     window.location.href = "/LoginComponent";
   };
+  const handleStaff = () => {
+    window.location.href = "/StaffLogin";
+  };
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -53,10 +56,11 @@ function Header() {
           </Nav>
           <Nav>
             {isLoggedIn ? (
-              <Button variant="outline-light" onClick={handleLogout}>Logout</Button>
+              <Button variant="outline-light me-2" onClick={handleLogout}>Logout</Button>
             ) : (
-              <Button variant="outline-light" as={Link} to="/LoginComponent">Login</Button>
+              <Button variant="outline-light me-2" as={Link} to="/LoginComponent">Login</Button>
             )}
+            <Button variant="outline-light" onClick={handleStaff}>StaffLogin</Button>
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -26,13 +26,52 @@ const StaffHandOver = () => {
     }
   };
 
+  const fetchBookingDetails = async (bookingId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/bookingdetails/booking_id/${bookingId}`);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('API Response - BookingDetails:', data);
+        sessionStorage.setItem('bookingDetailsofadon', JSON.stringify(data));
+
+        console.log(sessionStorage.getItem('bookingDetails'));
+      } else {
+        console.error('Failed to fetch BookingDetails:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching BookingDetails:', error);
+    }
+  };
+
+  const deleteBooking = async () => {
+    try {
+      const bookingDetails = JSON.parse(sessionStorage.getItem('bookingDetails'));
+      if (bookingDetails && bookingDetails.bookingId) {
+        // Fetch BookingDetails using bookingId from session storage
+
+      const response = await fetch(`http://localhost:8080/api/deletebooking/${bookingDetails.bookingId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log('Booking deleted successfully.');
+      } else {
+        console.error('Failed to delete booking:', response.statusText);
+      }
+    }
+   } catch (error) {
+      console.error('Error deleting booking:', error);
+    }
+  };
+
   const fetchCars = async (hub, cartype) => {
     try {
       setLoading(true);
-      const CarType_ID=cartype;
-      const hub_id=hub;
-      console.log("hub - ", hub);
-      console.log("carTypeId - ", CarType_ID);
+      const CarType_ID = cartype;
+      const hub_id = hub;
+      console.log('hub - ', hub);
+      console.log('carTypeId - ', CarType_ID);
 
       const response = await fetch(`http://localhost:8080/car/${hub_id}/${cartype}`);
 
@@ -51,41 +90,63 @@ const StaffHandOver = () => {
     }
   };
 
+  const storeBookingInSessionStorage = (booking) => {
+    sessionStorage.setItem('bookingDetails', JSON.stringify(booking));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     fetchBookings();
   };
 
-  // const handleBookButtonClick = async (car) => {
-  //   if (car.hub && car.hub.hubId && car.carType && car.carType.carTypeId) {
-  //     fetchCars(car.hub.hubId, car.carType.carTypeId);
-  //   } else {
-  //     console.error('Invalid booking data:', car);
-  //   }
-  // };
+  const handleBookButtonClick = async (booking) => {
+    if (booking.p_hubId && booking.carType && booking.carType.carTypeId) {
+      storeBookingInSessionStorage(booking);
+      fetchCars(booking.p_hubId, booking.carType.carTypeId);
+    } else {
+      console.error('Invalid booking data:', booking);
+    }
+  };
 
 
   const handleSelectButtonClick = async (selectedCar) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/car/update/${selectedCar.carId}`, {
-      // const response = await fetch(`http://localhost:8080/updateCarAvailability/${selectedCar.carId}`, {
-        method: 'PUT', // Assuming your API supports the PATCH method for updates
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ is_Available: 'N' }), // Update is_Available to 'N'
-      });
-
-      if (response.ok) {
-        console.log('Car availability updated successfully.');
-        // You may want to update the state to reflect the change in real-time
-        const updatedCars = cars.map((car) =>
-          car.carId === selectedCar.carId ? { ...car, is_Available: 'N' } : car
-        );
-        setCars(updatedCars);
+  
+      // Store selected car in sessionStorage
+      sessionStorage.setItem('selectedCar', JSON.stringify(selectedCar));
+  
+      const bookingDetails = JSON.parse(sessionStorage.getItem('bookingDetails'));
+      if (bookingDetails && bookingDetails.bookingId) {
+        // Fetch BookingDetails using bookingId from session storage
+        await fetchBookingDetails(bookingDetails.bookingId);
+  
+        // Update car availability
+        const response = await fetch(`http://localhost:8080/car/update/${selectedCar.carId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ is_Available: 'N' }),
+        });
+  
+        if (response.ok) {
+          console.log('Car availability updated successfully.');
+  
+          console.log("deleting--- ", bookingDetails.bookingId);
+          // Delete booking data from the booking table
+          await deleteBooking(bookingDetails.bookingId);
+  
+          const updatedCars = cars.map((car) =>
+            car.carId === selectedCar.carId ? { ...car, is_Available: 'N' } : car
+          );
+          setCars(updatedCars);
+          createAndSendInvoice();
+        } else {
+          console.error('Failed to update car availability:', response.statusText);
+        }
       } else {
-        console.error('Failed to update car availability:', response.statusText);
+        console.error('Invalid booking data in session storage:', bookingDetails);
       }
     } catch (error) {
       console.error('Error updating car availability:', error);
@@ -93,7 +154,245 @@ const StaffHandOver = () => {
       setLoading(false);
     }
   };
+  
 
+  // function createAndSendInvoice() {
+  //   // Retrieve data from sessionStorage
+  //   const selectedCar = JSON.parse(sessionStorage.getItem('selectedCar'));
+  //   const bookingDetails = JSON.parse(sessionStorage.getItem('bookingDetails'));
+  
+  //   // Create the invoice object
+  //   const invoice = {
+  //     invoiceId: 10,
+  //     empName: "xyz",
+  //     cName: "Ritik",
+  //     cEmailId: "1@gmail.com",
+  //     cMobileNo: "999999999",
+  //     cAadharNo: "11111",
+  //     cPassNo: "111",
+  //     rentalAmount: 32114.285714285714,
+  //     totalAmount: 34214.0,
+  //     totalAddonAmount: 2100.0,
+  //     rate: 100.0,
+  //     startDate: "2024-04-01T00:00:00",
+  //     handoverDate: "2024-04-10T00:00:00",
+  //     endDate: "2024-02-17T00:41:17",
+  //     booking: {
+  //       bookingId: bookingDetails.bookingId,
+  //       bookingDate: bookingDetails.bookingDate,
+  //       customer: bookingDetails.customer,
+  //       startDate: bookingDetails.startDate,
+  //       endDate: bookingDetails.endDate,
+  //       carType: bookingDetails.carType,
+  //       firstName: bookingDetails.firstName,
+  //       lastName: bookingDetails.lastName,
+  //       address: bookingDetails.address,
+  //       state: bookingDetails.state,
+  //       pin: bookingDetails.pin,
+  //       dailyRate: bookingDetails.dailyRate,
+  //       weeklyRate: bookingDetails.weeklyRate,
+  //       monthlyRate: bookingDetails.monthlyRate,
+  //       emailId: bookingDetails.emailId,
+  //       p_hubId: bookingDetails.p_hubId,
+  //       r_hubId: bookingDetails.r_hubId
+  //     },
+  //     car: selectedCar,
+  //     customer: {
+  //       customerId: bookingDetails.customer.customerId,
+  //       firstName: bookingDetails.customer.firstName,
+  //       lastName: bookingDetails.customer.lastName,
+  //       addressLine1: bookingDetails.customer.addressLine1,
+  //       addressLine2: bookingDetails.customer.addressLine2,
+  //       email: bookingDetails.customer.email,
+  //       city: bookingDetails.customer.city,
+  //       pincode: bookingDetails.customer.pincode,
+  //       phoneNumber: bookingDetails.customer.phoneNumber,
+  //       mobileNumber: bookingDetails.customer.mobileNumber,
+  //       creditCardType: bookingDetails.customer.creditCardType,
+  //       creditCardNumber: bookingDetails.customer.creditCardNumber,
+  //       drivingLicenseNumber: bookingDetails.customer.drivingLicenseNumber,
+  //       idpNumber: bookingDetails.customer.idpNumber,
+  //       issuedByDL: bookingDetails.customer.issuedByDL,
+  //       validThroughDL: bookingDetails.customer.validThroughDL,
+  //       passportNumber: bookingDetails.customer.passportNumber,
+  //       passportValidThrough: bookingDetails.customer.passportValidThrough,
+  //       passportIssuedBy: bookingDetails.customer.passportIssuedBy,
+  //       passportValidFrom: bookingDetails.customer.passportValidFrom,
+  //       passportIssueDate: bookingDetails.customer.passportIssueDate,
+  //       dateOfBirth: bookingDetails.customer.dateOfBirth,
+  //       password: bookingDetails.customer.password
+  //     },
+  //     p_hubId: bookingDetails.p_hubId,
+  //     r_hubId: bookingDetails.r_hubId,
+  //     isReturned: "N"
+  //   };
+  
+  //   console.log('Invoice:', invoice);
+  //   // Send data to server
+  //   fetch('http://localhost:8080/invoice', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(invoice)
+  //   })
+  //   .then(response => {
+  //     if (response.ok) {
+  //       console.log('Invoice sent successfully');
+  //     } else {
+  //       console.error('Failed to send invoice:', response.statusText);
+  //     }
+  //   })
+  //   .catch(error => {
+  //     console.error('Error sending invoice:', error);
+  //   });
+  // }
+  
+// Function to calculate total amount based on rental period and daily rate
+function calculateTotalAmount(startDate, endDate, dailyRate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const days = (end - start) / (1000 * 60 * 60 * 24);
+  return days * dailyRate;
+}
+
+// Function to format date as "YYYY-MM-DDTHH:MM:SS"
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const formattedDate = date.toISOString().split('.')[0];
+  return formattedDate;
+}
+
+function createAndSendInvoice() {
+  // Retrieve data from sessionStorage
+  const selectedCar = JSON.parse(sessionStorage.getItem('selectedCar'));
+  const bookingDetails = JSON.parse(sessionStorage.getItem('bookingDetails'));
+
+  // Ensure selectedCar is retrieved correctly
+  if (!selectedCar) {
+      console.error('Error: selectedCar is undefined');
+      return;
+  }
+
+  // Extract relevant information from bookingDetails
+  const customer = bookingDetails.customer;
+  const rentalAmount = bookingDetails.dailyRate; // Assuming rental amount is based on daily rate
+  const totalAmount = calculateTotalAmount(bookingDetails.startDate, bookingDetails.endDate, rentalAmount);
+  const totalAddonAmount = 0; // Assuming no addons for now
+
+  // Format dates
+  const formattedStartDate = formatDate(bookingDetails.startDate);
+  const formattedEndDate = formatDate(bookingDetails.endDate);
+
+  // Get current date and format it
+  const formattedCurrentDate = formatDate(new Date().toISOString());
+
+  // Create the invoice object
+  const invoice = {
+      "empName": "ADMIN",
+      "cName": `${customer.firstName} ${customer.lastName}`,
+      "cEmailId": customer.email,
+      "cMobileNo": customer.mobileNumber,
+      "cAadharNo": "1234566", // You need to get this information from somewhere
+      "cPassNo": customer.passportNumber,
+      "rentalAmount": rentalAmount,
+      "totalAmount": totalAmount,
+      "totalAddonAmount": totalAddonAmount,
+      "rate": rentalAmount,
+      "startDate": formattedStartDate,
+      "handoverDate": formattedCurrentDate,
+      "endDate": formattedEndDate,
+      "bookid": bookingDetails.bookingId,
+      "carid": selectedCar.carId, // Ensure selectedCar.carId is not undefined
+      "customerid": customer.customerId,
+      "p_hubId": bookingDetails.p_hubId,
+      "r_hubId": bookingDetails.r_hubId,
+      "isReturned": "N" // Assuming the car is returned at the end of the rental period
+  };
+
+  console.log('Invoice:', invoice);
+  // Send data to server
+  fetch('http://localhost:8080/invoice', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(invoice)
+})
+.then(response => {
+    if (response.ok) {
+        return response.json(); // Parse response JSON
+    } else {
+        throw new Error('Failed to send invoice: ' + response.statusText);
+    }
+})
+.then(data => {
+    // Assuming the server responds with session data in JSON format
+    // Store the session data in the browser's session storage
+    sessionStorage.setItem('InvoiceData', JSON.stringify(data));
+    console.log('Invoice sent successfully and session data stored:');
+    sendInvoiceDetails();
+})
+.catch(error => {
+    console.error('Error sending invoice:', error);
+});
+
+}
+
+function sendInvoiceDetails() {
+  // Parse the bookingDetails from sessionStorage
+  const bookingDetails = JSON.parse(sessionStorage.getItem('bookingDetailsofadon'));
+  const invoiceData = JSON.parse(sessionStorage.getItem('InvoiceData'));
+
+  // Loop through each addon in the bookingDetails
+  bookingDetails.forEach(detail => {
+      // Create the data object
+      const data = {
+          "invoice_id": invoiceData.invoiceId,
+          "addon_id": detail.addonId,
+          "amt": detail.addonRate
+      };
+
+      // Send data to server
+      fetch('http://localhost:8080/Invoice_details', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+      })
+      .then(response => {
+          if (response.ok) {
+              console.log('Data sent successfully for addon_id:', detail.addonId);
+              alert('SUCCESS...redirecting to home page after 5 seconds...');
+        // Redirect to home after 5 seconds
+        setTimeout(function() {
+            window.location.href = "/StaffPage";
+        }, 5000);
+
+          } else {
+              console.error('Failed to send data for addon_id:', detail.addonId, 'Response:', response.statusText);
+          }
+      })
+      .catch(error => {
+          console.error('Error sending data for addon_id:', detail.addonId, 'Error:', error);
+      });
+  });
+}
+
+// Call the function
+
+
+// Call the function to send invoice details to the server
+
+
+  // Call the function to create and send the invoice
+ 
+  
+  
+  // Call the function to create the invoice
+  
+  
   return (
     <div className="container mt-5 text-center">
       <h2>Enter Customer's Email</h2>
@@ -135,8 +434,7 @@ const StaffHandOver = () => {
                   <td>
                     <button
                       className="btn btn-success"
-                      onClick={() => fetchCars(booking.p_hubId,booking.carType.carTypeId)}
-                      // onClick={() => handleBookButtonClick(booking)}
+                      onClick={() => handleBookButtonClick(booking)}
                     >
                       Book
                     </button>
@@ -156,6 +454,7 @@ const StaffHandOver = () => {
               <tr>
                 <th>Car ID</th>
                 <th>Car Name</th>
+                <th>Car Number</th>
                 <th>Select</th>
                 {/* Add more columns as needed */}
               </tr>
@@ -165,6 +464,7 @@ const StaffHandOver = () => {
                 <tr key={car.carId}>
                   <td>{car.carId}</td>
                   <td>{car.carName}</td>
+                  <td>{car.numberPlate}</td>
                   <td>
                     <button
                       className="btn btn-primary"

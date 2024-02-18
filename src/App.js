@@ -26,6 +26,8 @@ import CancelBookingByStaff from './CancelBookingByStaff';
 import StaffHandOver from './StaffHandOver';
 import Return from './Return';
 import Rlogic from './Rlogic';
+import ReturnLogic from './ReturnLogic';
+import PDFGenerator from './PDFGenerator';
 
 const App = () => {
     return (
@@ -41,6 +43,7 @@ const App = () => {
           <Route path="/AboutUs" element={<AboutUs/>} />
           <Route path="/BookingFormRitik" element={<BookingFormRitik/>} />
           <Route path="/Modify" element={<Modify/>} />
+          <Route path="/ReturnLogic" element={<ReturnLogic/>} />
           <Route path="/Rlogic" element={<Rlogic/>} />
           <Route path="/ConfirmBooking" element={<ConfirmBooking/>} />
           <Route path="/CustomerForm" element={<CustomerForm/>} />
@@ -53,6 +56,7 @@ const App = () => {
           <Route path="/CancelBookingByStaff" element={<CancelBookingByStaff/>} />
           <Route path="/StaffBookingForm" element={<StaffBookingForm/>} />
           <Route path="/Cancel" element={<Cancel/>} />
+          <Route path="/PDFGenerator" element={<PDFGenerator/>} />
           <Route path="/BookingForm" element={<BookingForm/>} />
           <Route path="/HubSelectionForm" element={<HubSelectionForm/>} />
           <Route path="/ReturnHubSelectionForm" element={<ReturnHubSelectionForm/>} />

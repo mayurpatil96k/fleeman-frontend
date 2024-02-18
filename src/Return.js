@@ -1,474 +1,138 @@
-// import React, { useState, useEffect } from 'react';
-// import { Form, Button, Table } from 'react-bootstrap';
-
-// const Cancel = () => {
-//   const [invoices, setInvoices] = useState([]);
-//   const [email, setEmail] = useState('');
-  
-
-//   // Retrieve data from sessionStorage
-// const invoiceDetails = JSON.parse(sessionStorage.getItem('invoiceDetails'));
-
-// // Extract addonName and addonDailyRate from each object in the array
-// const addons = invoiceDetails.map(item => ({
-//   addonName: item.addon.addonName,
-//   addonDailyRate: item.addon.addonDailyRate
-// }));
-
-// // Convert the extracted data into a JSON string
-// const addonsJSON = JSON.stringify(addons);
-
-// // Store the JSON string in the session storage under a key named 'addons'
-// sessionStorage.setItem('addons', addonsJSON);
-
-// // Retrieve addon amount data from sessionStorage
-// const addonAmountData = JSON.parse(sessionStorage.getItem('addonamount'));
-
-// // Calculate the sum of the values
-// const sum = Object.values(addonAmountData).reduce((acc, curr) => acc + curr, 0);
-
-// // Store the sum in the session storage under a new key named 'addonAmountSum'
-// sessionStorage.setItem('addonAmountSum', sum);
-
-// // Retrieve data from sessionStorage
-// // const invoiceDetails = JSON.parse(sessionStorage.getItem('invoiceDetails'));
-
-// // Extract start and end dates
-// const startDate = new Date(invoiceDetails[0].invoice.startDate);
-// // const startDate = new Date();
-// const endDate = new Date();
-
-// // Calculate the difference in milliseconds
-// const difference = endDate - startDate;
-
-// // Calculate the difference in days
-// const differenceInDays = Math.floor(difference / (1000 * 60 * 60 * 24));
-
-// // Calculate the difference in months
-// const months = Math.floor(differenceInDays / 30);
-
-// // Calculate the remaining days
-// const remainingDays = differenceInDays % 30;
-
-// // Calculate the difference in weeks
-// const weeks = Math.floor(remainingDays / 7);
-
-// // Calculate the remaining days after removing weeks
-// const remainingDaysOfWeeks = remainingDays % 7;
-
-
-// // Initialize variables to store total amounts
-// let totalDaily = 0;
-// let totalWeekly = 0;
-// let totalMonthly = 0;
-
-// // Loop through each invoice detail
-// invoiceDetails.forEach(detail => {
-//     // Extract rates from the detail
-//     const dailyRate = detail.invoice.booking.carType.dailyRate;
-//     const weeklyRate = detail.invoice.booking.carType.weeklyRate;
-//     const monthlyRate = detail.invoice.booking.carType.monthlyRate;
-
-//     // Calculate the rental period in days
-//     const startDate = new Date(detail.invoice.booking.startDate);
-//     const endDate = new Date(detail.invoice.booking.endDate);
-//     const rentalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-
-//     // Calculate the rental period in weeks and months
-//     const rentalWeeks = Math.floor(rentalDays / 7);
-//     const rentalMonths = Math.floor(rentalDays / 30);
-
-//     // Calculate the remaining days after removing complete weeks and months
-//     const remainingDaysOfWeeks = rentalDays % 7;
-//     const remainingDaysOfMonths = rentalDays % 30;
-
-//     // Calculate the total amount for this detail
-//     const detailTotal = dailyRate * remainingDaysOfWeeks + weeklyRate * (rentalWeeks + remainingDaysOfMonths / 7) + monthlyRate * rentalMonths;
-
-//     // Add the total amount to the corresponding total
-//     totalDaily += dailyRate * remainingDaysOfWeeks;
-//     totalWeekly += weeklyRate * (rentalWeeks + remainingDaysOfMonths / 7);
-//     totalMonthly += monthlyRate * rentalMonths;
-// });
-
-// // Calculate the grand total
-// const grandTotal = totalDaily + totalWeekly + totalMonthly;
-
-// // Store the totals in sessionStorage
-// sessionStorage.setItem('totalDaily', totalDaily);
-// sessionStorage.setItem('totalWeekly', totalWeekly);
-// sessionStorage.setItem('totalMonthly', totalMonthly);
-// sessionStorage.setItem('grandTotal', grandTotal);
-
-// // Log the totals for verification
-// console.log("Total Daily:", totalDaily);
-// console.log("Total Weekly:", totalWeekly);
-// console.log("Total Monthly:", totalMonthly);
-// console.log("Grand Total:", grandTotal);
-
-
-// // Retrieve the existing grand total from sessionStorage
-// let grandTotal1 = parseInt(sessionStorage.getItem('grandTotal'));
-
-// // Retrieve sessionStorage.addonAmountSum and convert it to a number
-// const addonAmountSum = parseInt(sessionStorage.getItem('addonAmountSum'));
-
-// // Add addonAmountSum to the grand total
-// grandTotal1 += addonAmountSum;
-
-// // Store the updated grand total back into sessionStorage
-// sessionStorage.setItem('grandTotal', grandTotal1);
-
-// // Log the final total for verification
-// console.log("Final Total:", grandTotal1);
-
-
-//   const fetchData = async () => {
-//     try {
-//       if (email) {
-//         const response = await fetch(`http://localhost:8080/invoice/email/${email}`);
-//         if (!response.ok) {
-//           throw new Error('Network response was not ok');
-//         }
-//         const data = await response.json();
-//         setInvoices(data);
-//       }
-//     } catch (error) {
-//       console.error('Error fetching invoices:', error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     fetchData();
-//   }, [email]);
-
-//   const handleReturnClick = async (invoiceId) => {
-//     try {
-//       const response = await fetch(`http://localhost:8080/Invoice_details/${invoiceId}`);
-//       if (!response.ok) {
-//         throw new Error('Network response was not ok');
-//       }
-//       const invoiceDetails = await response.json();
-//       const addonAmounts = invoiceDetails.reduce((acc, item) => {
-//         acc[item.addon.addonName] = item.amt;
-//         return acc;
-//       }, {});
-      
-//       // Set the invoice details in session storage
-//       sessionStorage.setItem('addonamount', JSON.stringify(addonAmounts));
-//       sessionStorage.setItem('invoiceDetails', JSON.stringify(invoiceDetails));
-  
-//       // Assuming success means the invoice was returned, so refetch invoices
-//       fetchData();
-//     } catch (error) {
-//       console.error('Error returning invoice:', error);
-//     }
-//   };
-
-//   const handleSearch = (e) => {
-//     e.preventDefault();
-//     fetchData();
-//   };
-
-//   return (
-//     <div className="container mt-5">
-//       <h1>Return Car</h1>
-//       <Form onSubmit={handleSearch}>
-//         <Form.Group controlId="formEmail">
-//           <Form.Label>Email address:</Form.Label>
-//           <Form.Control
-//             type="email"
-//             placeholder="Enter email"
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//           />
-//         </Form.Group>
-//         <Button variant="primary" type="submit">
-//           Search
-//         </Button>
-//       </Form>
-//       {invoices.length > 0 && (
-//         <div>
-//           <h2 className="mt-4">Invoices for {email}</h2>
-//           <Table striped bordered hover>
-//             <thead>
-//               <tr>
-//                 <th>Invoice ID</th>
-//                 <th>Customer Name</th>
-//                 <th>Email</th>
-//                 <th>Car Details</th>
-//                 <th>Return Info</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {invoices.map(invoice => (
-//                 <tr key={invoice.invoiceId}>
-//                   <td>{invoice.invoiceId}</td>
-//                   <td>{invoice.customer.firstName} {invoice.customer.lastName}</td>
-//                   <td>{invoice.customer.email}</td>
-//                   <td>
-//                     <div>
-//                       <strong>Car Name:</strong> {invoice.car.carName}<br />
-//                       <strong>Number Plate:</strong> {invoice.car.numberPlate}<br />
-//                       <strong>Fuel Type:</strong> {invoice.car.fuelType}<br />
-//                       <strong>Capacity:</strong> {invoice.car.capacity}<br />
-//                       <strong>Mileage:</strong> {invoice.car.mileage}<br />
-//                     </div>
-//                   </td>
-//                   <td>
-//                     {invoice.isReturned === 'N' ? (
-//                       <Button variant="success" onClick={() => handleReturnClick(invoice.invoiceId)}>Return</Button>
-//                     ) : (
-//                       <span>Returned</span>
-//                     )}
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </Table>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Cancel;
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Table } from 'react-bootstrap';
+import axios from 'axios';
+import { Container, Row, Col, Form, Button, Table } from 'react-bootstrap';
 
 const Cancel = () => {
-  const [invoices, setInvoices] = useState([]);
-  const [email, setEmail] = useState('');
+    const [email, setEmail] = useState('');
+    const [invoices, setInvoices] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedInvoice, setSelectedInvoice] = useState(null);
 
-  const calculateAndStoreTotals = (invoiceDetails) => {
-    // Extract addonName and addonDailyRate from each object in the array
-    const addons = invoiceDetails.map(item => ({
-      addonName: item.addon.addonName,
-      addonDailyRate: item.addon.addonDailyRate
-    }));
-  
-    // Convert the extracted data into a JSON string
-    const addonsJSON = JSON.stringify(addons);
-  
-    // Store the JSON string in the session storage under a key named 'addons'
-    sessionStorage.setItem('addons', addonsJSON);
-  
-    // Retrieve addon amount data from sessionStorage
-    const addonAmountData = JSON.parse(sessionStorage.getItem('addonamount'));
-  
-    // Calculate the sum of the values
-    const sum = Object.values(addonAmountData).reduce((acc, curr) => acc + curr, 0);
-  
-    // Store the sum in the session storage under a new key named 'addonAmountSum'
-    sessionStorage.setItem('addonAmountSum', sum);
-  
-    // Extract start and end dates
-    const startDate = new Date(invoiceDetails[0].invoice.startDate);
-    const endDate = new Date();
-  
-    // Calculate the difference in milliseconds
-    const difference = endDate - startDate;
-  
-    // Calculate the difference in days
-    const differenceInDays = Math.floor(difference / (1000 * 60 * 60 * 24));
-  
-    // Calculate the difference in months
-    const months = Math.floor(differenceInDays / 30);
-  
-    // Calculate the remaining days
-    const remainingDays = differenceInDays % 30;
-  
-    // Calculate the difference in weeks
-    const weeks = Math.floor(remainingDays / 7);
-  
-    // Calculate the remaining days after removing weeks
-    const remainingDaysOfWeeks = remainingDays % 7;
-  
-    // Initialize variables to store total amounts
-    let totalDaily = 0;
-    let totalWeekly = 0;
-    let totalMonthly = 0;
-  
-    // Loop through each invoice detail
-    invoiceDetails.forEach(detail => {
-      // Extract rates from the detail
-      const dailyRate = detail.invoice.booking.carType.dailyRate;
-      const weeklyRate = detail.invoice.booking.carType.weeklyRate;
-      const monthlyRate = detail.invoice.booking.carType.monthlyRate;
-  
-      // Calculate the rental period in days
-      const startDate = new Date(detail.invoice.booking.startDate);
-      const endDate = new Date(detail.invoice.booking.endDate);
-      const rentalDays = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
-  
-      // Calculate the rental period in weeks and months
-      const rentalWeeks = Math.floor(rentalDays / 7);
-      const rentalMonths = Math.floor(rentalDays / 30);
-  
-      // Calculate the remaining days after removing complete weeks and months
-      const remainingDaysOfWeeks = rentalDays % 7;
-      const remainingDaysOfMonths = rentalDays % 30;
-  
-      // Calculate the total amount for this detail
-      const detailTotal = dailyRate * remainingDaysOfWeeks + weeklyRate * (rentalWeeks + remainingDaysOfMonths / 7) + monthlyRate * rentalMonths;
-  
-      // Add the total amount to the corresponding total
-      totalDaily += dailyRate * remainingDaysOfWeeks;
-      totalWeekly += weeklyRate * (rentalWeeks + remainingDaysOfMonths / 7);
-      totalMonthly += monthlyRate * rentalMonths;
-    });
-  
-    // Calculate the grand total
-    const grandTotal = totalDaily + totalWeekly + totalMonthly;
-  
-    // Store the totals in sessionStorage
-    sessionStorage.setItem('totalDaily', totalDaily);
-    sessionStorage.setItem('totalWeekly', totalWeekly);
-    sessionStorage.setItem('totalMonthly', totalMonthly);
-    sessionStorage.setItem('grandTotal', grandTotal);
-  
-    // Log the totals for verification
-    console.log("Total Daily:", totalDaily);
-    console.log("Total Weekly:", totalWeekly);
-    console.log("Total Monthly:", totalMonthly);
-    console.log("Grand Total:", grandTotal);
-  
-    // Retrieve the existing grand total from sessionStorage
-    let grandTotal1 = parseInt(sessionStorage.getItem('grandTotal'));
-  
-    // Retrieve sessionStorage.addonAmountSum and convert it to a number
-    const addonAmountSum = parseInt(sessionStorage.getItem('addonAmountSum'));
-  
-    // Add addonAmountSum to the grand total
-    grandTotal1 += addonAmountSum;
-  
-    // Store the updated grand total back into sessionStorage
-    sessionStorage.setItem('grandTotal1', grandTotal1);
-  
-    // Log the final total for verification
-    console.log("Final Total:", grandTotal1);
-  };
-  
-  
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (email) {
-          const response = await fetch(`http://localhost:8080/invoice/email/${email}`);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          setInvoices(data);
-        }
-      } catch (error) {
-        console.error('Error fetching invoices:', error);
-      }
+    const handleInputChange = (event) => {
+        setEmail(event.target.value);
     };
 
-    fetchData();
-  }, [email]);
+    const fetchInvoicesByEmail = async () => {
+        try {
+            setIsLoading(true);
+            const response = await axios.get(`http://localhost:8080/invoice/email/${email}`);
+            setInvoices(response.data);
+        } catch (error) {
+            console.error("Error fetching invoice data:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  const handleReturnClick = async (invoiceId) => {
-    try {
-      const response = await fetch(`http://localhost:8080/Invoice_details/${invoiceId}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+    async function fetchDataAndStoreInSessionStorage(id) {
+        try {
+          const response = await fetch(`http://localhost:8080/car/id/${id}`);
+          const data = await response.json();
+          
+          // Store data in sessionStorage
+          sessionStorage.setItem('carData', JSON.stringify(data));
+          
+          console.log('Data stored in sessionStorage:', data);
+        } catch (error) {
+          console.error('Error fetching or storing data:', error);
+        }
       }
-      const invoiceDetails = await response.json();
-      const addonAmounts = invoiceDetails.reduce((acc, item) => {
-        acc[item.addon.addonName] = item.amt;
-        return acc;
-      }, {});
+      
+      
 
-      // Set the invoice details in session storage
-      sessionStorage.setItem('addonamount', JSON.stringify(addonAmounts));
-      calculateAndStoreTotals(invoiceDetails);
-      sessionStorage.setItem('invoiceDetails', JSON.stringify(invoiceDetails));
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            await fetchInvoicesByEmail();
+        } catch (error) {
+            console.error("Error occurred during form submission:", error);
+        }
+    };
 
-      // Assuming success means the invoice was returned, so refetch invoices
-      setEmail(email); // Trigger useEffect to refetch data
-      window.location.href = "/Rlogic";
-    } catch (error) {
-      console.error('Error returning invoice:', error);
-    }
-  };
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`http://localhost:8080/invoice/email/${email}`);
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+    async function fetchCustomerDataAndStoreInSessionStorage(id) {
+        try {
+          const response = await fetch(`http://localhost:8080/getcustomer/id/${id}`);
+          const data = await response.json();
+          
+          // Store data in sessionStorage
+          sessionStorage.setItem('customerData', JSON.stringify(data));
+          
+          console.log('Customer data stored in sessionStorage:', data);
+        } catch (error) {
+          console.error('Error fetching or storing customer data:', error);
+        }
       }
-      const data = await response.json();
-      setInvoices(data);
-    } catch (error) {
-      console.error('Error searching invoices:', error);
-    }
-  };
 
-  return (
-    <div className="container mt-5">
-      <h1>Return Car</h1>
-      <Form onSubmit={handleSearch}>
-        <Form.Group controlId="formEmail">
-          <Form.Label>Email address:</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Button variant="primary" type="submit">
-          Search
-        </Button>
-      </Form>
-      {invoices.length > 0 && (
-        <div>
-          <h2 className="mt-4">Invoices for {email}</h2>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>Invoice ID</th>
-                <th>Customer Name</th>
-                <th>Email</th>
-                <th>Car Details</th>
-                <th>Return Info</th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoices.map(invoice => (
-                <tr key={invoice.invoiceId}>
-                  <td>{invoice.invoiceId}</td>
-                  <td>{invoice.customer.firstName} {invoice.customer.lastName}</td>
-                  <td>{invoice.customer.email}</td>
-                  <td>
-                    <div>
-                      <strong>Car Name:</strong> {invoice.car.carName}<br />
-                      <strong>Number Plate:</strong> {invoice.car.numberPlate}<br />
-                      <strong>Fuel Type:</strong> {invoice.car.fuelType}<br />
-                      <strong>Capacity:</strong> {invoice.car.capacity}<br />
-                      <strong>Mileage:</strong> {invoice.car.mileage}<br />
-                    </div>
-                  </td>
-                  <td>
-                    {invoice.isReturned === 'N' ? (
-                      <Button variant="success" onClick={() => handleReturnClick(invoice.invoiceId)}>Return</Button>
-                    ) : (
-                      <span>Returned</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-      )}
-    </div>
-  );
-};
+      async function fetchInvoiceDetailsAndStoreInSessionStorage(id) {
+        try {
+          const response = await fetch(`http://localhost:8080/Invoice_details/${id}`);
+          const data = await response.json();
+          
+          // Store data in sessionStorage
+          sessionStorage.setItem('invoiceDetails', JSON.stringify(data));
+          
+          console.log('Invoice details stored in sessionStorage:', data);
+        } catch (error) {
+          console.error('Error fetching or storing invoice details:', error);
+        }
+      }
+
+    const handleSelectInvoice = (invoice) => {
+        setSelectedInvoice(invoice);
+        fetchDataAndStoreInSessionStorage(invoice.carid);
+        fetchCustomerDataAndStoreInSessionStorage(invoice.customerid);
+        fetchInvoiceDetailsAndStoreInSessionStorage(invoice.invoiceId);
+        sessionStorage.setItem('selectedInvoice', JSON.stringify(invoice));
+        window.location.href = '/ReturnLogic';
+    };
+
+    useEffect(() => {
+        const selectedInvoiceFromSession = sessionStorage.getItem('selectedInvoice');
+        if (selectedInvoiceFromSession) {
+            setSelectedInvoice(JSON.parse(selectedInvoiceFromSession));
+        }
+    }, []);
+
+    return (
+        <Container>
+            <h1>Return</h1>
+            <Form onSubmit={handleSubmit}>
+                <Row className="mb-3">
+                    <Form.Group as={Col}>
+                        <Form.Label>Email:</Form.Label>
+                        <Form.Control type="email" value={email} onChange={handleInputChange} />
+                    </Form.Group>
+                </Row>
+                <Button variant="primary" type="submit" disabled={isLoading}>
+                    {isLoading ? 'Loading...' : 'Fetch Invoices'}
+                </Button>
+            </Form>
+            {invoices.length > 0 && (
+                <Table striped bordered hover className="mt-3">
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Customer Name</th>
+                            <th>Customer Email</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {invoices.map((invoice, index) => (
+                            <tr key={index}>
+                                <td>{invoice.invoiceId}</td>
+                                <td>{invoice.cName}</td>
+                                <td>{invoice.cEmailId}</td>
+                                <td>
+                                    <Button variant="primary" onClick={() => handleSelectInvoice(invoice)}>Select</Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            )}
+        </Container>
+    );
+}
 
 export default Cancel;
