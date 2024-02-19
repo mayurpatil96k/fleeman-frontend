@@ -26,7 +26,7 @@ const BookingByStaff = ({ onEmailSubmit }) => {
   };
   
   const handleNextPage = () => {
-    window.location.href = '/BookingFormRitik';
+    window.location.href = '/BookingForm';
   };
 
   return (

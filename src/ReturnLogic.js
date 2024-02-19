@@ -25,6 +25,11 @@ const ReturnLogic = () => {
         // Calculate  remaining days
         var totalRemainingDays = Math.floor(timeDifference / millisecondsInDay);
         
+        if (remainingMonths === 0 && remainingWeeks === 0 && remainingDays === 0) {
+          remainingDays = 1;
+          totalRemainingDays = 1;
+      }
+
         // Store the remaining time data in sessionStorage
         var remainingTimeData = {
             months: remainingMonths,
@@ -208,14 +213,15 @@ async function updateCarStatus(carId, status) {
   }
   
 
-const handleSubmit = (event) => {
-  event.preventDefault();
-  console.log('Fuel Status Selected:', fuelStatus);
-  sendInvoiceData();
-  updateCarStatus(carData11.carId, fuelStatus);
-
-  // Add logic to send fuel status to the server or perform other actions
-};
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log('Fuel Status Selected:', fuelStatus);
+    await sendInvoiceData();
+    await updateCarStatus(carData11.carId, fuelStatus);
+    window.location.href = '/PDFGenerator';
+  
+    // Add logic to send fuel status to the server or perform other actions
+  };
 
 return (
     <div className="container mt-5">

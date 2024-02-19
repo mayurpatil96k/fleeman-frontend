@@ -18,87 +18,174 @@ const ConfirmBooking = () => {
     const queryParam = encodeURIComponent(JSON.stringify(formData));
     window.location.href = `/BookingFormRitik?data=${queryParam}`;
   };
-
-  const postDataToServer = async () => {
-    try {
-      // Retrieve data from session storage and parse it
-      const customerData = JSON.parse(sessionStorage.getItem('customerData'));
-      const selectedCar = JSON.parse(sessionStorage.getItem('selectedCar'));
-      const bookingFormData = JSON.parse(sessionStorage.getItem('bookingFormData'));
-      const customerFormData = JSON.parse(sessionStorage.getItem('customerFormData'));
-      const selectedHub = JSON.parse(sessionStorage.getItem('selectedHub'));
-      const selectedReturnHub = JSON.parse(sessionStorage.getItem('selectedReturnHub'));
-      const currentDate = new Date();
-
-// Format current date to YYYY-MM-DD format
-const formattedCurrentDate = currentDate.toISOString().split('T')[0];
-
-  
-      // Create the formatted data object
-      const postData = {
-        "bookingDate": formattedCurrentDate,
-        "customer": {
-          customerId: customerData.customerId,
-          firstName: customerData.firstName,
-          lastName: customerData.lastName,
-          addressLine1: customerData.addressLine1,
-          addressLine2: customerData.addressLine2,
-          email: customerData.email,
-          city: customerData.city,
-          pincode: customerData.pincode,
-          phoneNumber: customerData.phoneNumber,
-          mobileNumber: customerData.mobileNumber,
-          creditCardType: customerData.creditCardType,
-          creditCardNumber: customerData.creditCardNumber,
-          drivingLicenseNumber: customerData.drivingLicenseNumber,
-          idpNumber: customerData.idpNumber,
-          issuedByDL: customerData.issuedByDL,
-          validThroughDL: customerData.validThroughDL,
-          passportNumber: customerData.passportNumber,
-          passportValidThrough: customerData.passportValidThrough,
-          passportIssuedBy: customerData.passportIssuedBy,
-          passportValidFrom: customerData.passportValidFrom,
-          passportIssueDate: customerData.passportIssueDate,
-          dateOfBirth: customerData.dateOfBirth,
-          password: customerData.password
-        },
-        "startDate": bookingFormData.rentalDate,
-        "endDate": bookingFormData.returnDate,
-        "carType": {
-          carTypeId: selectedCar.carTypeId,
-          carTypeName: selectedCar.carTypeName,
-          dailyRate: selectedCar.dailyRate,
-          weeklyRate: selectedCar.weeklyRate,
-          monthlyRate: selectedCar.monthlyRate,
-          imagePath: selectedCar.imagePath
-        },
-        "firstName": customerFormData.r_firstName,
-        "lastName": customerFormData.r_lastName,
-        "address": customerFormData.r_addressLine1 + ' ' + customerFormData.r_addressLine2,
-        "state": customerFormData.r_city,
-        "pin": "111111",
-        "dailyRate": selectedCar.dailyRate,
-        "weeklyRate": selectedCar.weeklyRate,
-        "monthlyRate": selectedCar.monthlyRate,
-        "emailId": customerFormData.r_email,
-        "p_hubId": selectedHub.hubId,
-        "r_hubId": selectedReturnHub.hubId
-    }
-  
-      // Make a POST request to the specified link with the formatted data
-      const response = await axios.post('http://localhost:8080/api/addbooking', postData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      sessionStorage.setItem('bookingResponseData', JSON.stringify(response.data));
-      alert("booking Successful");
-      sendSelectedAddonsToDatabase();
-    } catch (error) {
-      console.error('Error posting data:', error);
-    }
+  const handleModify1 = () => {
+    // Pass the form data as a query parameter when navigating back
+    const queryParam = encodeURIComponent(JSON.stringify(formData));
+    window.location.href = `/BookingForm?data=${queryParam}`;
   };
+
+//   const postDataToServer = async () => {
+//     try {
+//       // Retrieve data from session storage and parse it
+//       const customerData = JSON.parse(sessionStorage.getItem('customerData'));
+//       const selectedCar = JSON.parse(sessionStorage.getItem('selectedCar'));
+//       const bookingFormData = JSON.parse(sessionStorage.getItem('bookingFormData'));
+//       const customerFormData = JSON.parse(sessionStorage.getItem('customerFormData'));
+//       const selectedHub = JSON.parse(sessionStorage.getItem('selectedHub'));
+//       const selectedReturnHub = JSON.parse(sessionStorage.getItem('selectedReturnHub'));
+//       const currentDate = new Date();
+
+// // Format current date to YYYY-MM-DD format
+// const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+
   
+//       // Create the formatted data object
+//       const postData = {
+//         "bookingDate": formattedCurrentDate,
+//         "customer": {
+//           customerId: customerData.customerId,
+//           firstName: customerData.firstName,
+//           lastName: customerData.lastName,
+//           addressLine1: customerData.addressLine1,
+//           addressLine2: customerData.addressLine2,
+//           email: customerData.email,
+//           city: customerData.city,
+//           pincode: customerData.pincode,
+//           phoneNumber: customerData.phoneNumber,
+//           mobileNumber: customerData.mobileNumber,
+//           creditCardType: customerData.creditCardType,
+//           creditCardNumber: customerData.creditCardNumber,
+//           drivingLicenseNumber: customerData.drivingLicenseNumber,
+//           idpNumber: customerData.idpNumber,
+//           issuedByDL: customerData.issuedByDL,
+//           validThroughDL: customerData.validThroughDL,
+//           passportNumber: customerData.passportNumber,
+//           passportValidThrough: customerData.passportValidThrough,
+//           passportIssuedBy: customerData.passportIssuedBy,
+//           passportValidFrom: customerData.passportValidFrom,
+//           passportIssueDate: customerData.passportIssueDate,
+//           dateOfBirth: customerData.dateOfBirth,
+//           password: customerData.password
+//         },
+//         "startDate": bookingFormData.rentalDate,
+//         "endDate": bookingFormData.returnDate,
+//         "carType": {
+//           carTypeId: selectedCar.carTypeId,
+//           carTypeName: selectedCar.carTypeName,
+//           dailyRate: selectedCar.dailyRate,
+//           weeklyRate: selectedCar.weeklyRate,
+//           monthlyRate: selectedCar.monthlyRate,
+//           imagePath: selectedCar.imagePath
+//         },
+//         "firstName": customerFormData.r_firstName,
+//         "lastName": customerFormData.r_lastName,
+//         "address": customerFormData.r_addressLine1 + ' ' + customerFormData.r_addressLine2,
+//         "state": customerFormData.r_city,
+//         "pin": customerData.pincode,
+//         "dailyRate": selectedCar.dailyRate,
+//         "weeklyRate": selectedCar.weeklyRate,
+//         "monthlyRate": selectedCar.monthlyRate,
+//         "emailId": customerFormData.r_email,
+//         "p_hubId": selectedHub.hubId,
+//         "r_hubId": selectedReturnHub.hubId
+//     }
+  
+//       // Make a POST request to the specified link with the formatted data
+//       const response = await axios.post('http://localhost:8080/api/addbooking', postData, {
+//         headers: {
+//           'Content-Type': 'application/json'
+//         }
+//       });
+//       sessionStorage.setItem('bookingResponseData', JSON.stringify(response.data));
+//       alert("booking Successful");
+//       sendSelectedAddonsToDatabase();
+//     } catch (error) {
+//       console.error('Error posting data:', error);
+//     }
+//   };
+const postDataToServer = async () => {
+  try {
+    // Retrieve data from session storage and parse it
+    const customerData = JSON.parse(sessionStorage.getItem('customerData'));
+    const selectedCar = JSON.parse(sessionStorage.getItem('selectedCar'));
+    const bookingFormData = JSON.parse(sessionStorage.getItem('bookingFormData'));
+    const customerFormData = JSON.parse(sessionStorage.getItem('customerFormData'));
+    const selectedHub = JSON.parse(sessionStorage.getItem('selectedHub'));
+    const selectedReturnHub = JSON.parse(sessionStorage.getItem('selectedReturnHub'));
+    const currentDate = new Date();
+
+    // Format current date to YYYY-MM-DD format
+    const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+
+
+    // Create the formatted data object
+    const postData = {
+      "bookingDate": formattedCurrentDate,
+      "customer": {
+        customerId: customerData.customerId,
+        firstName: customerData.firstName,
+        lastName: customerData.lastName,
+        addressLine1: customerData.addressLine1,
+        addressLine2: customerData.addressLine2,
+        email: customerData.email,
+        city: customerData.city,
+        pincode: customerData.pincode,
+        phoneNumber: customerData.phoneNumber,
+        mobileNumber: customerData.mobileNumber,
+        creditCardType: customerData.creditCardType,
+        creditCardNumber: customerData.creditCardNumber,
+        drivingLicenseNumber: customerData.drivingLicenseNumber,
+        idpNumber: customerData.idpNumber,
+        issuedByDL: customerData.issuedByDL,
+        validThroughDL: customerData.validThroughDL,
+        passportNumber: customerData.passportNumber,
+        passportValidThrough: customerData.passportValidThrough,
+        passportIssuedBy: customerData.passportIssuedBy,
+        passportValidFrom: customerData.passportValidFrom,
+        passportIssueDate: customerData.passportIssueDate,
+        dateOfBirth: customerData.dateOfBirth,
+        password: customerData.password
+      },
+      "startDate": bookingFormData.rentalDate,
+      "endDate": bookingFormData.returnDate,
+      "carType": {
+        carTypeId: selectedCar.carTypeId,
+        carTypeName: selectedCar.carTypeName,
+        dailyRate: selectedCar.dailyRate,
+        weeklyRate: selectedCar.weeklyRate,
+        monthlyRate: selectedCar.monthlyRate,
+        imagePath: selectedCar.imagePath
+      },
+      "firstName": customerFormData.r_firstName,
+      "lastName": customerFormData.r_lastName,
+      "address": customerFormData.r_addressLine1 + ' ' + customerFormData.r_addressLine2,
+      "state": customerFormData.r_city,
+      "pin": customerData.pincode,
+      "dailyRate": selectedCar.dailyRate,
+      "weeklyRate": selectedCar.weeklyRate,
+      "monthlyRate": selectedCar.monthlyRate,
+      "emailId": customerFormData.r_email,
+      "p_hubId": selectedHub.hubId,
+      "r_hubId": selectedReturnHub.hubId
+    }
+
+    // Make a POST request to the specified link with the formatted data
+    const response = await axios.post('http://localhost:8080/api/addbooking', postData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    sessionStorage.setItem('bookingResponseData', JSON.stringify(response.data));
+    alert("Booking Successful");
+    sendSelectedAddonsToDatabase();
+    setTimeout(() => {
+      window.location.href = "/"; // Redirect to homepage after 5 seconds
+    }, 4000); // 5000 milliseconds = 5 seconds
+  } catch (error) {
+    console.error('Error posting data:', error);
+  }
+};
+
   const handleConfirm = async () => {
     try {
       // Make an axios post request to store data in the database
@@ -205,6 +292,11 @@ const formattedCurrentDate = currentDate.toISOString().split('T')[0];
                 <Col>
                   <Button variant="secondary" onClick={handleModify}>
                     Modify
+                  </Button>
+                </Col>
+                <Col>
+                  <Button variant="secondary" onClick={handleModify1}>
+                    Modify From Scratch
                   </Button>
                 </Col>
                 <Col>
